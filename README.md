@@ -1,19 +1,15 @@
-# exam-code-maker
+# Exam Code Maker
 
-## Project setup
-```
-npm install
-```
+This project was created to generate Images with syntax highlighted code for exams @FHGR. Quick and dirty.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Features
 
-### Compiles and minifies for production
-```
-npm run build
-```
+- Monospace Code
+- Syntax Highlight for HTML, CSS, JavaScript, PHP and SQL
+- direct PNG export
+- Max-width adjustable
+- Anti-OCR (couple of versions)
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Demo
+
+[Demo](https://446808-2.web1.fh-htwchur.ch/)

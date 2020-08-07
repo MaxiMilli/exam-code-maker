@@ -1,8 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
-import VueCodeHighlight from 'vue-code-highlight';
+import VuePrism from 'vue-prism'
+Vue.use(VuePrism)
 
-Vue.use(VueCodeHighlight) //registers the v-highlight directive
+import 'prismjs/themes/prism.css'
+
 Vue.config.productionTip = false
 
 new Vue({

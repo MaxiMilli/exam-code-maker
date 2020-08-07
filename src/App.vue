@@ -1,44 +1,70 @@
 <template>
   <div id="app">
-    <textarea v-model="code" class="text-area" ref="textcode"></textarea><br>
-<br>
-Sprache: 
+    <textarea v-model="code" class="text-area" ref="textcode" @keydown="keynumber++"></textarea><br>
+    <br>
+    Sprache:
     <select v-model="lang" @change="keynumber++">
-      <option v-for="(lng, ind) in langs" :key="ind">{{lng}}</option>
-    </select><br>
+      <option v-for="(lng, ind) in langs" :key="ind">{{ lng }}</option>
+    </select><br><br>
     Max-Breite:
-    <input type="number" v-model="maxwidthoffield">
-    <vue-code-highlight :language="lang" class="wrapper" :style="{ width: maxwidthoffield + 'px' }" :key="keynumber">
-      {{code}}
-    </vue-code-highlight>
+    <input type="number" v-model="maxwidth">px<br><br>
+    Mit Anti-OCR:
+    <select v-model="withAntiOCR" @change="keynumber++">
+      <option v-for="(lng, ind) in ['kein', '1', '2', '3']" :key="ind">{{ lng }}</option>
+    </select><br>
+
+
+    <div class="imagearea">
+      <prism :language="lang" :key="keynumber" id="codefield" :style="{ maxWidth: maxwidth + 'px', backgroundImage: backgroundUrl, backgroundSize: randomPercentage() + '%'}">
+        {{ code }}
+      </prism>
+    </div>
+
     <button @click="makeImage">Make image</button>
+
+    <br><br><br>
+    <a href="https://github.com/MaxiMilli/exam-code-maker" target="_blank">Source available on GitHub.</a>
   </div>
 </template>
 
 <script>
 
-import { component as VueCodeHighlight } from 'vue-code-highlight';
+
 import html2canvas from "html2canvas";
-import "../node_modules/prism-es6/components/prism-php.js";
+import 'prismjs'
+import 'prismjs/themes/prism.css'
+import 'prismjs/components/prism-sql'
+import 'prismjs/components/prism-markup-templating'
+import 'prismjs/components/prism-php'
+import 'prismjs/components/prism-javascript'
+import 'prismjs/components/prism-css'
+import Prism from 'vue-prism-component'
 
 export default {
   name: 'App',
   data() {
     return {
       code: "",
-      lang: '',
-      maxwidthoffield: 600,
+      lang: 'css',
+      maxwidth: 600,
       langs: [
         'html',
         'css',
-        'javascript',
-        'php'
+        'js',
+        'php',
+        'sql'
       ],
-      keynumber: 4
+      keynumber: 4,
+      withAntiOCR: ''
     }
   },
-  components:{
-    VueCodeHighlight
+  components: {
+    Prism
+  },
+  computed: {
+    backgroundUrl() {
+        return 'url(noise' + this.withAntiOCR + '.png)'
+    }
   },
   methods: {
     makeImage() {
@@ -47,24 +73,29 @@ export default {
         return true;
       }
 
-      html2canvas(document.querySelector(".language-javascript")).then(canvas => {
+      html2canvas(document.querySelector("#codefield")).then(canvas => {
+
         const a = document.createElement('a');
 
         a.href = canvas.toDataURL('image/png', 2);
-        a.download = 'exam-code-'+ Math.random(300) + '.png';
+        a.download = 'exam-code-' + Math.random(300) + '.png';
         a.click()
 
         document.body.removeChild(a);
-          
+
       });
+    },
+    randomPercentage() {
+      let rand = Math.floor(Math.random() * 5) + 100;
+      console.log(rand )
+      return rand;
     }
   },
 }
 </script>
 
 <style lang="scss">
-//@import url("../node_modules/vue-code-highlight/themes/prism.css");
-@import url("../node_modules/prism-es6/themes/prism.css");
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -74,18 +105,33 @@ export default {
   margin-top: 60px;
 }
 
-.wrapper {
-  widows: auto;
+
+.imagearea {
+  width: 100%;
   display: flex;
-  overflow: none;
+  flex-direction: row;
   justify-content: center;
-  code {
-    word-wrap: break-word;
+  padding: 40px;
+  box-sizing: border-box;
+
+  pre {
+    margin: 0 auto;
+    width: max-content;
+
+    code {
+      display: block;
+      white-space: pre-wrap
+    }
   }
 }
 
-.language-javascript {
-  width: auto;
+#codefield {
+
+  background-attachment: local;
+  background-repeat: repeat;
+
+  background-position: center;
+  background-origin: padding-box
 }
 
 .text-area {
